@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-
+import contactsReducer from './contactsSlice';
+import { combineReducers } from 'redux';
 import {
   persistStore,
   persistReducer,
@@ -11,15 +12,17 @@ import {
   REGISTER,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import { reduce as reducer } from './Reducer';
+
+const rootReducer = combineReducers({
+  contacts: contactsReducer,
+});
 
 const persistConfig = {
-  key: 'contacts', //cheia pt stocarea datelor persistente
-  storage, //stocarea locala a browserului
-  whitelist: ['contacts'], // Lista reducerilor care vor fi persistate (în acest caz, doar reducerul 'contacts')
+  key: 'root',
+  storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, reducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
@@ -30,4 +33,5 @@ export const store = configureStore({
       },
     }),
 });
+
 export const persistor = persistStore(store);
